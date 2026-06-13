@@ -14,13 +14,11 @@ class ThreadPoolTest {
     @Test
     void threadPoolExecutorRunsTasks() throws Exception {
         AtomicInteger counter = new AtomicInteger();
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(
                 2, 2,
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(10),
-                new ThreadPoolExecutor.CallerRunsPolicy()
-        );
-        try {
+                new ThreadPoolExecutor.CallerRunsPolicy())) {
             List<Future<?>> futures = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
                 futures.add(pool.submit(counter::incrementAndGet));
@@ -29,9 +27,6 @@ class ThreadPoolTest {
                 f.get(2, TimeUnit.SECONDS);
             }
             assertEquals(5, counter.get());
-        } finally {
-            pool.shutdown();
-            assertTrue(pool.awaitTermination(3, TimeUnit.SECONDS));
         }
     }
 
@@ -39,12 +34,10 @@ class ThreadPoolTest {
     void rejectedExecutionWhenQueueFull() throws Exception {
         CountDownLatch workerStarted = new CountDownLatch(1);
         CountDownLatch releaseWorker = new CountDownLatch(1);
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(
+        try (ThreadPoolExecutor pool = new ThreadPoolExecutor(
                 1, 1,
                 0L, TimeUnit.MILLISECONDS,
-                new SynchronousQueue<>()
-        );
-        try {
+                new SynchronousQueue<>())) {
             pool.execute(() -> {
                 workerStarted.countDown();
                 awaitQuietly(releaseWorker);
@@ -55,8 +48,6 @@ class ThreadPoolTest {
                     }));
         } finally {
             releaseWorker.countDown();
-            pool.shutdownNow();
-            pool.awaitTermination(2, TimeUnit.SECONDS);
         }
     }
 
