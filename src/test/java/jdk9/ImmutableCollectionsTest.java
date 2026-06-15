@@ -29,5 +29,7 @@ class ImmutableCollectionsTest {
     void setOf() {
         Set<Integer> s = Set.of(1, 2, 3);
         assertTrue(s.contains(2));
+
+        assertThrows(IllegalArgumentException.class, () -> Set.of(1, 1));
     }
 }

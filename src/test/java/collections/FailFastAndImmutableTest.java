@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +38,23 @@ class FailFastAndImmutableTest {
         assertEquals(List.of("a"), view);
     }
 
+    /**
+     * 
+     * Map.of 函数是不接受 null key 和 null value 的
+     * 
+     */
     @Test
     void mapOfRejectsNullKey() {
         assertThrows(NullPointerException.class, () -> Map.of((String) null, 1));
+    }
+
+    /**
+     * 但跟 HashMap 接受 null key 和 null value 无关
+     * 
+     */
+    @Test
+    void mapInit() {
+        Map<String, String> maps = new HashMap<>();
+        maps.put(null, null);
     }
 }

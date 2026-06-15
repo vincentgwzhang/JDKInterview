@@ -10,6 +10,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class StreamEnhancementsTest {
 
+    /**
+     * takeWhile：拿走满足条件的前缀
+     */
     @Test
     void takeWhileStopsOnFirstFalse() {
         List<Integer> ordered = List.of(2, 4, 6, 7, 8);
@@ -19,6 +22,9 @@ class StreamEnhancementsTest {
         assertEquals(List.of(2, 4, 6), taken);
     }
 
+    /**
+     * dropWhile：丢掉满足条件的前缀
+     */
     @Test
     void dropWhileSkipsPrefix() {
         List<Integer> nums = List.of(1, 3, 5, 2, 4);

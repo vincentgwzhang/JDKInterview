@@ -1,6 +1,7 @@
 package collections;
 
 import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.junit.jupiter.api.Test;
 
@@ -84,13 +85,32 @@ class ListOperationsTest {
     }
 
     @Test
+    void iterableRemoveExample() {
+        List<String> list = new ArrayList<>(List.of("A", "B", "C", "D"));
+        Iterator<String> iterable = list.iterator();
+        while (iterable.hasNext()) {
+            String value = iterable.next();
+            iterable.remove();
+            System.out.println("removed = " + value + ", size = " + list.size());
+        }
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
     void failSafeExample() {
         CopyOnWriteArrayList<String> list = new CopyOnWriteArrayList<>(List.of("A", "B", "C", "D"));
-        for (String s : list) {
-            if (s.equals("B")) {
-                list.remove(s);  // 不抛异常，但迭代的仍是旧快照
-            }
+        Iterator<String> iterator = list.iterator();
+
+        list.remove("B");
+        assertEquals(3, list.size());
+
+        List<String> iterated = new ArrayList<>();
+        while (iterator.hasNext()) {
+            iterated.add(iterator.next());
         }
+
+        assertEquals(4, iterated.size());
+        assertEquals(List.of("A", "B", "C", "D"), iterated);
         assertEquals(List.of("A", "C", "D"), list);
     }
 }

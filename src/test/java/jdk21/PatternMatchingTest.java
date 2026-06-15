@@ -6,9 +6,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PatternMatchingTest {
 
-    sealed interface Animal permits Dog, Cat {}
-    record Dog(String name) implements Animal {}
-    record Cat(int lives) implements Animal {}
+    sealed interface Animal permits Dog, Cat {
+    }
+
+    record Dog(String name) implements Animal {
+    }
+
+    record Cat(int lives) implements Animal {
+    }
 
     static String describe(Animal a) {
         return switch (a) {
@@ -30,10 +35,13 @@ class PatternMatchingTest {
         Object obj = new Point(3, 4);
         if (obj instanceof Point(int x, int y)) {
             assertEquals(5.0, Math.hypot(x, y), 1e-9);
+            IO.println("x = " + x);
+            IO.println("y = " + y);
         } else {
             fail("expected Point");
         }
     }
 
-    record Point(int x, int y) {}
+    record Point(int x, int y) {
+    }
 }

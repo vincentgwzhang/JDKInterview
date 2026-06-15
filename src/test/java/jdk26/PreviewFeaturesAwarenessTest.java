@@ -26,9 +26,14 @@ class PreviewFeaturesAwarenessTest {
     }
 
     @Test
-    void virtualThreadsAvailableFrom21() {
+    void virtualThreadsAvailableFrom21() throws InterruptedException {
         Thread.Builder builder = Thread.ofVirtual().name("vt-", 0);
-        Thread t = builder.unstarted(() -> {});
+        Thread t = builder.unstarted(() -> {
+            IO.println("This thread was triggered");
+        });
         assertTrue(t.isVirtual());
+
+        t.start();
+        t.join();
     }
 }
